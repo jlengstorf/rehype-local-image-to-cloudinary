@@ -1,0 +1,12 @@
+{
+  "name": "rehype-local-image-to-cloudinary",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Jason Lengstorf <jason@lengstorf.com> (https://lengstorf.com)",
+  "license": "MIT",
+  "dependencies": {
+    "cloudinary": "^1.18.1",
+    "md5-file": "^4.0.0",
+    "unist-util-visit": "^2.0.1"
+  }
+}
