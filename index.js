@@ -1,53 +1,55 @@
-const path = require('path');
-const visit = require('unist-util-visit');
-const upload = require('./upload');
-const getImageUrl = require('./build-url');
+const path = require("path");
+const visit = require("unist-util-visit");
+const upload = require("./upload");
+const getImageUrl = require("./build-url");
 
 module.exports = ({
   baseDir,
-  uploadFolder = 'netlify',
-  transformations = 'f_auto,q_auto',
-}) => tree =>
-  new Promise(async (resolve, reject) => {
-    const convertToCloudinary = async node => {
-      const imagePath = path.join(baseDir, node.properties.src);
+  uploadFolder = "netlify",
+  transformations = "f_auto,q_auto",
+}) => async (tree) => {
+  let promises = [];
 
-      try {
-        // upload the local image to Cloudinary
-        const cloudinaryName = await upload({
-          imagePath,
-          uploadFolder,
-        });
+  const convertToCloudinary = (node) => {
+    const imagePath = path.join(baseDir, node.properties.src);
 
-        // replace the local image path with the Cloudinary asset URL
-        node.properties.src = getImageUrl({
-          fileName: cloudinaryName,
-          uploadFolder,
-          transformations,
-        });
+    // upload the local image to Cloudinary
+    const p = upload({
+      imagePath,
+      uploadFolder,
+    }).then((cloudinaryName) => {
+      console.log({ cloudinaryName });
 
-        // add a srcSet for better perf on smaller viewports
-        node.properties.srcSet = [1800, 1200, 600, 300]
-          .map(width => {
-            const srcSetTransformations = `${transformations},w_${width}`;
-            const url = getImageUrl({
-              fileName: cloudinaryName,
-              transformations: srcSetTransformations,
-              uploadFolder,
-            });
+      // replace the local image path with the Cloudinary asset URL
+      node.properties.src = getImageUrl({
+        fileName: cloudinaryName,
+        uploadFolder,
+        transformations,
+      });
 
-            return `${url} ${width}w`;
-          })
-          .join();
+      // add a srcSet for better perf on smaller viewports
+      node.properties.srcSet = [1800, 1200, 600, 300]
+        .map((width) => {
+          const srcSetTransformations = `${transformations},w_${width}`;
+          const url = getImageUrl({
+            fileName: cloudinaryName,
+            transformations: srcSetTransformations,
+            uploadFolder,
+          });
 
-        // for browsers that support native lazy loading, add it
-        node.properties.loading = 'lazy';
+          return `${url} ${width}w`;
+        })
+        .join();
 
-        resolve();
-      } catch (err) {
-        reject(err);
-      }
-    };
+      // for browsers that support native lazy loading, add it
+      node.properties.loading = "lazy";
+    });
 
-    visit(tree, node => node.tagName === 'img', convertToCloudinary);
-  });
+    promises.push(p);
+  };
+
+  visit(tree, (node) => node.tagName === "img", convertToCloudinary);
+  await Promise.all(promises);
+
+  return;
+};
