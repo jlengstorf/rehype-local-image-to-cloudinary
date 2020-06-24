@@ -14,12 +14,10 @@ module.exports = ({
     const imagePath = path.join(baseDir, node.properties.src);
 
     // upload the local image to Cloudinary
-    const p = upload({
+    const promise = upload({
       imagePath,
       uploadFolder,
     }).then((cloudinaryName) => {
-      console.log({ cloudinaryName });
-
       // replace the local image path with the Cloudinary asset URL
       node.properties.src = getImageUrl({
         fileName: cloudinaryName,
@@ -45,7 +43,7 @@ module.exports = ({
       node.properties.loading = "lazy";
     });
 
-    promises.push(p);
+    promises.push(promise);
   };
 
   visit(tree, (node) => node.tagName === "img", convertToCloudinary);
