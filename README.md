@@ -49,7 +49,7 @@ Yields:
 ```html
 no issues found
 <img
-  src="https://res.cloudinary.com/myCloudName/image/upload/f_auto,q_auto/corig-pics/cute-corgi-f93d593472435fd2705086a6986f52cc"
+  src="https://res.cloudinary.com/myCloudName/image/upload/f_auto,q_auto/corgi-pics/cute-corgi-f93d593472435fd2705086a6986f52cc"
   srcset="..."
   loading="lazy"
 />
