@@ -1,12 +1,12 @@
-const path = require("path");
-const visit = require("unist-util-visit");
-const upload = require("./upload");
-const getImageUrl = require("./build-url");
+const path = require('path');
+const visit = require('unist-util-visit');
+const upload = require('./upload');
+const getImageUrl = require('./build-url');
 
 module.exports = ({
   baseDir,
-  uploadFolder = "netlify",
-  transformations = "f_auto,q_auto",
+  uploadFolder = 'netlify',
+  transformations = 'f_auto,q_auto',
 }) => async (tree) => {
   let promises = [];
 
@@ -40,13 +40,13 @@ module.exports = ({
         .join();
 
       // for browsers that support native lazy loading, add it
-      node.properties.loading = "lazy";
+      node.properties.loading = 'lazy';
     });
 
     promises.push(promise);
   };
 
-  visit(tree, (node) => node.tagName === "img", convertToCloudinary);
+  visit(tree, (node) => node.tagName === 'img', convertToCloudinary);
   await Promise.all(promises);
 
   return;
