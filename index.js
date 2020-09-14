@@ -11,6 +11,10 @@ module.exports = ({
   let promises = [];
 
   const convertToCloudinary = (node) => {
+    if (node.properties.src.match(/^http/)) {
+      return;
+    }
+
     const imagePath = path.join(baseDir, node.properties.src);
 
     // upload the local image to Cloudinary
