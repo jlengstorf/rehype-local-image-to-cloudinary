@@ -29,19 +29,21 @@ module.exports = ({
         transformations,
       });
 
-      // add a srcSet for better perf on smaller viewports
-      node.properties.srcSet = [1800, 1200, 600, 300]
-        .map((width) => {
-          const srcSetTransformations = `${transformations},w_${width}`;
-          const url = getImageUrl({
-            fileName: cloudinaryName,
-            transformations: srcSetTransformations,
-            uploadFolder,
-          });
+      if (path.extname(imagePath) !== '.gif') {
+        // add a srcSet for better perf on smaller viewports
+        node.properties.srcSet = [1800, 1200, 600, 300]
+          .map((width) => {
+            const srcSetTransformations = `${transformations},w_${width}`;
+            const url = getImageUrl({
+              fileName: cloudinaryName,
+              transformations: srcSetTransformations,
+              uploadFolder,
+            });
 
-          return `${url} ${width}w`;
-        })
-        .join();
+            return `${url} ${width}w`;
+          })
+          .join();
+      }
 
       // for browsers that support native lazy loading, add it
       node.properties.loading = 'lazy';
