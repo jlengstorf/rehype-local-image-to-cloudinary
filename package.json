@@ -8,6 +8,7 @@
     "cloudinary": "^1.18.1",
     "dotenv": "^8.2.0",
     "md5-file": "^4.0.0",
+    "node-fetch": "^2.6.1",
     "unist-util-visit": "^2.0.1"
   }
 }
